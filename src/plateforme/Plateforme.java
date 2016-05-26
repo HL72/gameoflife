@@ -3,22 +3,26 @@ package plateforme;
 import java.io.File;
 import java.io.FileReader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import descripteur.Descripteur;
-import plugins.afficheurs.Afficheur;
+import plugins.moniteur.Moniteur;
 
 public class Plateforme {
 
-	private static Map<String,List<Descripteur>> plugins = new HashMap<String,List<Descripteur>>();
+	private static Map<Type, List<Descripteur>> plugins = new HashMap<Type, List<Descripteur>>();
 
 	private static Plateforme instance = null;
+	private Moniteur moniteur = null;
 
 	private Plateforme() throws Exception {
 		loadConfig("config.txt");
+		moniteur = (Moniteur) getPlugin(plugins.get(Type.MONITEUR).get(0));
+		moniteur.afficher(plugins);
 	}
 
 	public static Plateforme getInstance() throws Exception {
@@ -29,12 +33,12 @@ public class Plateforme {
 		return instance;
 	}
 
-	public Afficheur getAfficheur(Descripteur desc) throws Exception {
+	public Object getPlugin(Descripteur desc) throws Exception {
 		String classNom = desc.getClasseNom();
-		return (Afficheur) Class.forName(classNom).newInstance();
+		return Class.forName(classNom).newInstance();
 	}
 
-	public static Map<String, List<Descripteur>> getPlugins() {
+	public static Map<Type, List<Descripteur>> getPlugins() {
 		return plugins;
 	}
 
@@ -49,13 +53,15 @@ public class Plateforme {
 		for (int i = 0; i < pluginsTxt.length; i++) {
 			Properties p = new Properties();
 			p.load(new StringReader(pluginsTxt[i]));
-
-			String type = (String) p.get("type");
+			Type type = Type.valueOf((String) p.get("type"));
 			String desc = (String) p.get("desc");
 			String classe = (String) p.get("class");
 			List<Descripteur> descs = plugins.get(type);
+			if (descs == null) {
+				descs = new ArrayList<Descripteur>();
+				plugins.put(type, descs);
+			}
 			descs.add(new Descripteur(desc, classe));
-			
 		}
 	}
 

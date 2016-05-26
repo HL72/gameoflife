@@ -1,4 +1,0 @@
-type = moniteur
-class = plugins.moniteur.Moniteur
-desc = moniteur console
-*
