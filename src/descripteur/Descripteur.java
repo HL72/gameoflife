@@ -2,15 +2,25 @@ package descripteur;
 
 public class Descripteur {
 
-	private String nom;
+	private String description;
+	private String interfaceNom;
 	private String classeNom;
 	private String etat;
 
-	public Descripteur(String nom, String classeNom) {
+	public Descripteur(String nom, String interfaceNom, String classeNom) {
 		super();
-		this.nom = nom;
+		this.description = nom;
+		this.interfaceNom = interfaceNom;
 		this.classeNom = classeNom;
 		this.etat = "cree";
+	}
+
+	public String getInterfaceNom() {
+		return interfaceNom;
+	}
+
+	public void setInterfaceNom(String interfaceNom) {
+		this.interfaceNom = interfaceNom;
 	}
 
 	public String getClasseNom() {
@@ -23,15 +33,15 @@ public class Descripteur {
 
 	@Override
 	public String toString() {
-		return "Description : " + nom + "\nEtat : " + etat;
+		return "Description : " + description + "\nEtat : " + etat;
 	} 
 
-	public String getNom() {
-		return nom;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setNom(String nom) {
-		this.nom = nom;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getEtat() {

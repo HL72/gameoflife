@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import descripteur.Descripteur;
-import plateforme.Type;
 
 public class MoniteurImpl implements Moniteur{
 
@@ -31,11 +30,11 @@ public class MoniteurImpl implements Moniteur{
 	}
 
 	@Override
-	public void afficher(Map<Type, List<Descripteur>> ls) {
-		Set<Type> typesPlugin = ls.keySet();
-		for (Type type : typesPlugin) {
-			System.out.println("Type plugin : " + type);
-			List<Descripteur> values = ls.get(type);
+	public void afficher(Map<String, List<Descripteur>> ls) {
+		Set<String> ifacesPlugin = ls.keySet();
+		for (String iface : ifacesPlugin) {
+			System.out.println("Type plugin : " + iface);
+			List<Descripteur> values = ls.get(iface);
 			for (Descripteur descripteur : values) {
 				System.out.println(descripteur.toString());
 			}
