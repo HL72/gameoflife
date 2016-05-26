@@ -1,19 +1,19 @@
 package plateforme;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import descripteur.Descripteur;
 import plugins.afficheurs.Afficheur;
 
 public class Plateforme {
 
-	private static List<Descripteur> afficheurs = new ArrayList<Descripteur>();
+	private static Map<String,List<Descripteur>> plugins = new HashMap<String,List<Descripteur>>();
 
 	private static Plateforme instance = null;
 
@@ -34,36 +34,28 @@ public class Plateforme {
 		return (Afficheur) Class.forName(classNom).newInstance();
 	}
 
-	public List<Descripteur> getDescripteurs() {
-		return afficheurs;
+	public static Map<String, List<Descripteur>> getPlugins() {
+		return plugins;
 	}
 
 	private static void loadConfig(String filename) throws Exception {
-		char[] buffer = new char[500];
+		char[] buffer = new char[(int) new File(filename).length()];
 		FileReader fr = new FileReader(filename);
 		fr.read(buffer);
+		fr.close();
 		String bufferString = String.valueOf(buffer);
 		String[] pluginsTxt = bufferString.split("\\*");
 
 		for (int i = 0; i < pluginsTxt.length; i++) {
 			Properties p = new Properties();
 			p.load(new StringReader(pluginsTxt[i]));
-			String classNom = null;
-			String desc = null;
-			Set<String> keys = (Set<String>) p.keySet();
-			String type = (String) ((Hashtable<Object, Object>) p.keySet()).get("type");
-			for (Object key : p.keySet()) {
-				if (key.equals("class")) {
-					classNom = (String) p.get(key);
-				} else {
-					desc = (String) p.get(key);
-				}
-				if (classNom != null && desc != null) {
-					afficheurs.add(new Descripteur(desc, classNom));
-					classNom = null;
-					desc = null;
-				}
-			}
+
+			String type = (String) p.get("type");
+			String desc = (String) p.get("desc");
+			String classe = (String) p.get("class");
+			List<Descripteur> descs = plugins.get(type);
+			descs.add(new Descripteur(desc, classe));
+			
 		}
 	}
 
