@@ -1,4 +1,8 @@
-interface = plugins.moniteur.Moniteur
-class = plugins.moniteur.MoniteurImpl
+interface = plateforme.interfaces.Moniteur
+class = plugins.moniteurs.MoniteurImpl
 desc = moniteur console
+*
+interface = plateforme.interfaces.Modele
+class = plugins.modeles.ModelesImpl
+desc = modele grille jeu de la vie
 *

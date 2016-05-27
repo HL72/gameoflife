@@ -5,14 +5,12 @@ public class Descripteur {
 	private String description;
 	private String interfaceNom;
 	private String classeNom;
-	private String etat;
 
-	public Descripteur(String nom, String interfaceNom, String classeNom) {
+	public Descripteur(String desc, String interfaceNom, String classeNom) {
 		super();
-		this.description = nom;
+		this.description = desc;
 		this.interfaceNom = interfaceNom;
 		this.classeNom = classeNom;
-		this.etat = "cree";
 	}
 
 	public String getInterfaceNom() {
@@ -33,7 +31,7 @@ public class Descripteur {
 
 	@Override
 	public String toString() {
-		return "Description : " + description + "\nEtat : " + etat;
+		return description + " (" + classeNom + " de type " + interfaceNom + ")" ;
 	} 
 
 	public String getDescription() {
@@ -44,12 +42,5 @@ public class Descripteur {
 		this.description = description;
 	}
 
-	public String getEtat() {
-		return etat;
-	}
-
-	public void setEtat(String etat) {
-		this.etat = etat;
-	}
 
 }

@@ -1,6 +1,5 @@
-package plugins.producteur;
+package plateforme.interfaces;
 
-import application.modele.Modele;
 
 public interface Producteur {
 
