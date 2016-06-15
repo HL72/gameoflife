@@ -3,23 +3,31 @@ package plugins.producteurs;
 import descripteur.Descripteur;
 import plateforme.Plateforme;
 import plateforme.Plugin;
-import plateforme.interfaces.Modele;
 import plateforme.interfaces.Producteur;
-import plugins.modeles.ModeleImpl;
+import plugins.jeudelavie.MatriceModele;
+import plugins.jeudelavie.MatriceModeleImpl;
 
 public class ProducteurImpl extends Plugin implements Producteur {
+	
+	private MatriceModele matrice;
 
-	private ModeleImpl modele = new ModeleImpl(plateforme,descripteur);
-
-	public ProducteurImpl(Plateforme p, Descripteur d) {
-		super(p,d);
+	public ProducteurImpl(Plateforme plateforme, Descripteur descripteur) {
+		super(plateforme, descripteur);
+		initMatrice();
+	}
+	
+	private void initMatrice() {
+		matrice = new MatriceModeleImpl(new int[10][10]);
+		matrice.getMatrice()[0][1] = 1;
+		matrice.getMatrice()[5][5] = 1;
+		matrice.getMatrice()[3][6] = 1;
+		matrice.getMatrice()[7][8] = 1;
+		matrice.getMatrice()[4][1] = 1;
 	}
 
 	@Override
-	public Modele getModele() {
-		int[][] matrice = new int[20][20]; 
-		modele.setMatrice(matrice);
-		return modele;
+	public MatriceModele getMatrice() {
+		return matrice;
 	}
-
+	
 }

@@ -2,16 +2,16 @@ package plugins.jeudelavie;
 
 import java.util.List;
 
+import descripteur.Descripteur;
 import plateforme.Plateforme;
 import plateforme.Plugin;
 import plateforme.interfaces.Application;
-import plateforme.interfaces.Modele;
-import plugins.modeles.ModeleImpl;
-import descripteur.Descripteur;
+import plateforme.interfaces.Producteur;
+import plugins.producteurs.ProducteurImpl;
 
 public class JeuDeLaVie extends Plugin implements Application {
 	
-	ModeleImpl modele;
+	MatriceModele modele;
 	
 	public JeuDeLaVie(Plateforme p, Descripteur d) throws Exception {
 		super(p,d);
@@ -19,7 +19,7 @@ public class JeuDeLaVie extends Plugin implements Application {
 
 	@Override
 	public void executer() throws Exception {
-		initialiserModele();
+		initialiserMatriceModele();
 		
 		//Une cellule morte poss�dant exactement trois voisines vivantes devient vivante (elle na�t).
 		//Une cellule vivante poss�dant deux ou trois voisines vivantes le reste, sinon elle meurt
@@ -95,11 +95,12 @@ public class JeuDeLaVie extends Plugin implements Application {
 		return nbVoisins;
 	}
 
-	private void initialiserModele() throws Exception {
+	private void initialiserMatriceModele() throws Exception {
 		// TODO A am�liorer
-		List<Descripteur> modelesDesc = Plateforme.getPlugins(Modele.class.getName());
-		Descripteur modeleDesc = modelesDesc.get(0);
-		modele = (ModeleImpl) Plateforme.getPlugin(modeleDesc);
+		List<Descripteur> producteursDesc = Plateforme.getPlugins(Producteur.class.getName());
+		Descripteur producteurDesc = producteursDesc.get(0);
+		ProducteurImpl producteur = (ProducteurImpl) Plateforme.getPlugin(producteurDesc);
+		modele = producteur.getMatrice();
 	}
 
 }

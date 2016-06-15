@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import plateforme.interfaces.Application;
-import plateforme.interfaces.Modele;
 import plateforme.interfaces.Moniteur;
 import plateforme.interfaces.Producteur;
 import descripteur.Descripteur;
@@ -21,7 +20,7 @@ import descripteur.Descripteur;
 public final class Plateforme {
 
 	private static List<String> interfacesAutorisees = Arrays.asList(Application.class.getName(),
-			Modele.class.getName(), Moniteur.class.getName(), Producteur.class.getName());
+			Moniteur.class.getName(), Producteur.class.getName());
 
 	private static Map<String, List<Descripteur>> plugins = new HashMap<String, List<Descripteur>>();
 	private static List<Descripteur> nonCharges = new ArrayList<Descripteur>();
@@ -142,7 +141,7 @@ public final class Plateforme {
 			m.notifier(d, e);
 		}
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		Plateforme.demarrer("config.txt");
 	}
