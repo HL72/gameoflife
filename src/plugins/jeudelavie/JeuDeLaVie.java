@@ -69,7 +69,7 @@ public class JeuDeLaVie extends Plugin implements Application {
 		}
 		
 		//milieu droit
-		if(x+1 <= m.length){
+		if(x+1 < m.length){
 			if(m[x+1][y] != 0){
 				nbVoisins++;
 			}
@@ -88,14 +88,14 @@ public class JeuDeLaVie extends Plugin implements Application {
 			}
 			//haut gauche
 			if(x-1 > 0){
-				if(m[x+1][y-1] != 0){
+				if(m[x-1][y-1] != 0){
 					nbVoisins++;
 				}
 			}
 		}
 		
 		//milieu bas
-		if(y+1 <= m[0].length){
+		if(y+1 < m[0].length){
 			if(m[x][y+1] != 0){
 				nbVoisins++;
 			}
