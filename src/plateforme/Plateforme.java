@@ -19,18 +19,17 @@ import plateforme.interfaces.Producteur;
 import descripteur.Descripteur;
 
 public final class Plateforme {
-	
-	private static List<String> interfacesAutorisees = Arrays.asList(Application.class.getName(), Modele.class.getName(), Moniteur.class.getName(), Producteur.class.getName());
-	
+
+	private static List<String> interfacesAutorisees = Arrays.asList(Application.class.getName(),
+			Modele.class.getName(), Moniteur.class.getName(), Producteur.class.getName());
+
 	private static Map<String, List<Descripteur>> plugins = new HashMap<String, List<Descripteur>>();
-	private static List<Descripteur> nonCharges = new ArrayList<Descripteur>(); 
+	private static List<Descripteur> nonCharges = new ArrayList<Descripteur>();
 
 	private static List<Moniteur> moniteurs = new ArrayList<Moniteur>();
 
-	
 	private static Plateforme instance = null;
 
-	
 	private Plateforme() {
 		super();
 		for (String i : interfacesAutorisees) {
@@ -38,27 +37,35 @@ public final class Plateforme {
 		}
 	}
 
+	public static Plateforme getInstance() throws Exception {
+
+		if (instance == null) {
+			instance = new Plateforme();
+		}
+		return instance;
+	}
+
 	public static Plugin getPlugin(Descripteur desc) throws Exception {
 
 		String classNom = desc.getClasseNom();
 		String ifaceNom = desc.getInterfaceNom();
 		if (Class.forName(ifaceNom).isAssignableFrom(Class.forName(classNom))) {
-			Constructor<?> constructeur = Class.forName(classNom).getDeclaredConstructor(Plateforme.class, Descripteur.class);
+			Constructor<?> constructeur = Class.forName(classNom).getDeclaredConstructor(Plateforme.class,
+					Descripteur.class);
 			return (Plugin) constructeur.newInstance(instance, desc);
-		}
-		else{
+		} else {
 			throw new Exception("Echec instanciation plugin :" + classNom + " n'est pas un " + ifaceNom);
 		}
-			
+
 	}
 
 	public static Map<String, List<Descripteur>> getPlugins() {
 		return plugins;
 	}
-	
+
 	public static List<Descripteur> getPlugins(String interfaceNom) {
 		List<Descripteur> desc = new ArrayList<Descripteur>();
-		if(interfacesAutorisees.contains(interfaceNom)){
+		if (interfacesAutorisees.contains(interfaceNom)) {
 			desc = plugins.get(interfaceNom);
 		}
 		return desc;
@@ -79,30 +86,29 @@ public final class Plateforme {
 			String desc = (String) p.get("desc");
 			String classeNom = (String) p.get("class");
 			Descripteur d = new Descripteur(desc, interfaceNom, classeNom);
-			if(interfacesAutorisees.contains(interfaceNom)){
+			if (interfacesAutorisees.contains(interfaceNom)) {
 				plugins.get(interfaceNom).add(d);
-			}
-			else{
+			} else {
 				nonCharges.add(d);
 			}
 		}
 	}
 
 	public static void demarrer(String fichier) throws Exception {
-		
-		instance = new Plateforme();
+
+		Plateforme.getInstance();
 		loadConfig(fichier);
 
 		List<Descripteur> moniteursDesc = plugins.get(Moniteur.class.getName());
-		
+
 		// TODO traiter le moniteur comme un plugin à part entière
 		for (Descripteur mDesc : moniteursDesc) {
 			Plugin p = getPlugin(mDesc);
-			Moniteur m =  (Moniteur) p;
+			Moniteur m = (Moniteur) p;
 			m.notifier(mDesc, EtatPlugin.DEMARRE);
 			moniteurs.add(m);
 		}
-		
+
 		// TODO initialiser l'application comme un plugin
 		List<Descripteur> apps = plugins.get(Application.class.getName());
 		for (Descripteur app : apps) {
@@ -111,18 +117,16 @@ public final class Plateforme {
 			((Application) p).executer();
 		}
 
-		for (Entry<String, List<Descripteur>> entry : plugins.entrySet())
-		{
-		    for (Descripteur d : entry.getValue()) {
-		    	notifierMoniteurs(d, EtatPlugin.CHARGE);
+		for (Entry<String, List<Descripteur>> entry : plugins.entrySet()) {
+			for (Descripteur d : entry.getValue()) {
+				notifierMoniteurs(d, EtatPlugin.CHARGE);
 			}
 		}
-		
+
 		afficherPlugins(EtatPlugin.DEMARRE);
 		afficherPlugins(EtatPlugin.CHARGE);
 		afficherPlugins(EtatPlugin.NON_CHARGE);
-		
-		
+
 		// TODO coder puis initialiser l'afficheur
 
 	}
@@ -132,11 +136,14 @@ public final class Plateforme {
 			m.afficher(e);
 		}
 	}
-	
+
 	private static void notifierMoniteurs(Descripteur d, EtatPlugin e) {
 		for (Moniteur m : moniteurs) {
 			m.notifier(d, e);
 		}
 	}
-
+	
+	public static void main(String[] args) throws Exception {
+		Plateforme.demarrer("config.txt");
+	}
 }

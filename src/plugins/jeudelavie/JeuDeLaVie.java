@@ -21,8 +21,8 @@ public class JeuDeLaVie extends Plugin implements Application {
 	public void executer() throws Exception {
 		initialiserModele();
 		
-		//Une cellule morte possédant exactement trois voisines vivantes devient vivante (elle naît).
-		//Une cellule vivante possédant deux ou trois voisines vivantes le reste, sinon elle meurt
+		//Une cellule morte possï¿½dant exactement trois voisines vivantes devient vivante (elle naï¿½t).
+		//Une cellule vivante possï¿½dant deux ou trois voisines vivantes le reste, sinon elle meurt
 		int[][] m = modele.getMatrice();
 		for (int x = 0; x < m.length; x++) {
 			for (int y = 0; y < m.length; y++) {
@@ -96,7 +96,7 @@ public class JeuDeLaVie extends Plugin implements Application {
 	}
 
 	private void initialiserModele() throws Exception {
-		//TODO A améliorer
+		// TODO A amï¿½liorer
 		List<Descripteur> modelesDesc = Plateforme.getPlugins(Modele.class.getName());
 		Descripteur modeleDesc = modelesDesc.get(0);
 		modele = (ModeleImpl) Plateforme.getPlugin(modeleDesc);
