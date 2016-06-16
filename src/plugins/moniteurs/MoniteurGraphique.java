@@ -97,7 +97,7 @@ public class MoniteurGraphique extends Plugin implements Moniteur, Observer {
 			container.add(p);
 		}
 		else{
-			label.setForeground(new Color(178, 183, 192));
+			label.setForeground(new Color(135, 135, 150));
 			container.add(label);
 		}
 	}
