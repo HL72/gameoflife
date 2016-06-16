@@ -22,7 +22,7 @@ import plateforme.interfaces.Producteur;
 public class JeuDeLaVie extends Plugin implements Application, Observer {
 
 	MatriceModele modele;
-	List<Descripteur> producteurs;
+	List<Descripteur> producteurs = new ArrayList<Descripteur>();
 	Producteur producteurCourant;
 	JFrame frame;
 	JPanel container;
@@ -166,10 +166,11 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
 	@Override
 	public void notify(Action a) {
 		ActionType t = a.getActionType();
-
 		if (ActionType.CHARGEMENT_PLUGIN.equals(t)) {
 			Descripteur d = (Descripteur) a.getData();
-			producteurs.add(d);
+			if (d.getInterfaceNom().equals(Producteur.class.getName())) {
+				producteurs.add(d);
+			}
 		}
 	}
 
