@@ -10,7 +10,7 @@ autorun = true
 *
 interface = plateforme.interfaces.Producteur
 class = plugins.jeudelavie.ProducteurImplDefaut
-desc = producteur par defaut le bloc jeu de la vie
+desc = producteur par defaut jeu de la vie
 autorun = false
 *
 interface = plateforme.interfaces.Producteur

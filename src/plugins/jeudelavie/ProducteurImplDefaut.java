@@ -7,7 +7,6 @@ import plateforme.interfaces.Producteur;
 
 /*
  * Producteur par défaut du jeu de la vie
- * Structure: le bloc
  */
 public class ProducteurImplDefaut extends Plugin implements Producteur {
 
@@ -20,10 +19,9 @@ public class ProducteurImplDefaut extends Plugin implements Producteur {
 	
 	private void initMatrice() {
 		int[][] m = new int[10][10];
+		m[1][0] = 1;
 		m[1][1] = 1;
 		m[1][2] = 1;
-		m[2][1] = 1;
-		m[2][2] = 1;
 		
 		matrice = new MatriceModele(m);
 	}
