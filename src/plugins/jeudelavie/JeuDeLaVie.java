@@ -29,19 +29,28 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
 
 	public JeuDeLaVie(Plateforme p, Descripteur d) throws Exception {
 		super(p, d);
-		// Création de l'IHM
-		frame = new JFrame("Jeu de la Vie");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		container = new JPanel();
-		container.setBackground(Color.white);
-		container.setLayout(null);
-		container.setPreferredSize(new Dimension(300, 300));
-		// Enregistrement de l'Observer sur la plateforme
 		p.register(this);
-		// Initialisation du producteur par défaut
-		producteurCourant = new ProducteurImplDefaut(p, d);
-		modele = producteurCourant.getMatrice();
-		executer();
+		Thread thread = new Thread(){
+		    public void run(){
+            	// Création de l'IHM
+				frame = new JFrame("Jeu de la Vie");
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				container = new JPanel();
+				container.setBackground(Color.white);
+				container.setLayout(null);
+				container.setPreferredSize(new Dimension(300, 300));
+				// Initialisation du producteur par défaut
+				producteurCourant = new ProducteurImplDefaut(p, d);
+				modele = producteurCourant.getMatrice();
+				try {
+					executer();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		  };
+		  thread.start();	
 	}
 
 	@Override

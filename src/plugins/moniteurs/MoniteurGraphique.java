@@ -36,7 +36,11 @@ public class MoniteurGraphique extends Plugin implements Moniteur, Observer {
 	public MoniteurGraphique(Plateforme p, Descripteur d) {
 		super(p,d);
 		p.register(this);
-		createAndShowGUI();
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
 	}
 
 	private void createAndShowGUI() {

@@ -13,3 +13,8 @@ class = plugins.producteurs.ProducteurImplNavire
 desc = Producteur le navire jeu de la vie
 autorun = false
 *
+interface = plateforme.interfaces.Application
+class = plugins.jeudelavie.JeuDeLaVie
+desc = Application du jeu de la vie
+autorun = true
+*
