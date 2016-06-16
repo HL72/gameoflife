@@ -110,8 +110,8 @@ public final class Plateforme implements Subject {
 		Plateforme.getInstance();
 		loadConfig(fichier);
 
-	//TODO séparer les notions de chargements et d'execution via un attribut autorun dans le descripteur
-	//TODO tester si il est possible de prendre en compte les plugins non chargés (cas du fichier mal formé ou de l'interface introuvable)
+	//TODO sï¿½parer les notions de chargements et d'execution via un attribut autorun dans le descripteur
+	//TODO tester si il est possible de prendre en compte les plugins non chargï¿½s (cas du fichier mal formï¿½ ou de l'interface introuvable)
 	for (Entry<String, List<Descripteur>> entry : plugins.entrySet()) {
 		for (Descripteur d : entry.getValue()) {
 			instance.notifyObservers(new ChargementPlugin(d));

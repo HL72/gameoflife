@@ -9,7 +9,17 @@ desc = application jeu de la vie
 autorun = true
 *
 interface = plateforme.interfaces.Producteur
-class = plugins.producteurs.ProducteurImpl
-desc = producteur de données pour le modèle
+class = plugins.jeudelavie.ProducteurImplDefaut
+desc = producteur par defaut le bloc jeu de la vie
+autorun = false
+*
+interface = plateforme.interfaces.Producteur
+class = plugins.producteurs.ProducteurImplTube
+desc = producteur le tube jeu de la vie
+autorun = false
+*
+interface = plateforme.interfaces.Producteur
+class = plugins.producteurs.ProducteurImplNavire
+desc = producteur le navire jeu de la vie
 autorun = false
 *
