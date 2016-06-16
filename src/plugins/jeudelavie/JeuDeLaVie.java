@@ -35,7 +35,7 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
 		container = new JPanel();
 		container.setBackground(Color.white);
 		container.setLayout(null);
-		container.setPreferredSize(new Dimension(400, 400));
+		container.setPreferredSize(new Dimension(300, 300));
 		// Enregistrement de l'Observer sur la plateforme
 		p.register(this);
 		// Initialisation du producteur par défaut
@@ -46,26 +46,171 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
 
 	@Override
 	public void executer() throws Exception {
-
-		// Une cellule morte poss�dant exactement trois voisines vivantes
-		// devient vivante (elle na�t).
-		// Une cellule vivante poss�dant deux ou trois voisines vivantes le
-		// reste, sinon elle meurt
-		int[][] m = modele.getMatrice();
-		for (int x = 0; x < m.length; x++) {
-			for (int y = 0; y < m.length; y++) {
-				int nbVoisins = compterVoisins(x, y, m);
-				if (nbVoisins == 3) {
-					m[x][y] = 1;
-				} else if (nbVoisins != 2 && nbVoisins != 3) {
-					m[x][y] = 0;
-				}
+		int[][] current = modele.getMatrice();
+		for (int k = 0; k < 100; k++) {
+			afficher();
+			Thread.sleep(500);
+			current = evoluer(current);
+			modele.setMatrice(current);
 			}
-		}
-
-		afficher();
 	}
 
+	private int[][] evoluer(int[][] m) {
+		int[][] next = new int[m.length][m[0].length];
+
+		for(int i = 0; i < m.length; i++) {
+            for(int j = 0; j < m.length; j++) {
+                //gestion des borts de la grille
+                if(i == 0 || j == 0 || i == m.length-1 || j == m.length-1) {
+                    //si on est dans le coint supérieur gauche
+                    if(i == 0 && j == 0) {  
+                        if(m[i][j] == 0) { //si une cellule est morte
+                            if(((m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1])) == 3){
+                                next[i][j] = 1;
+                            }
+                        }
+                        else{ //si une cellules est donc vivante
+                            if((((m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1])) != 3) && ((((m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1])) != 2))){
+                            	next[i][j] = 0;
+                            }
+                            else {
+                            	next[i][j] = 1;
+                            }
+                        }
+                    }
+                    //si on est dans la ligne du haut
+                    if(j == 0 && i > 0 && i < m.length-1 ) {
+                        if(m[i][j] == 0) {
+                            if(((m[i-1][j]) + (m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1]) + (m[i-1][j])) == 3) {
+                            	next[i][j] = 1;
+                            }
+                        }
+                        else{
+                            if((((m[i-1][j]) + (m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1]) + (m[i-1][j])) != 3) && ((((m[i-1][j]) + (m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1]) + (m[i-1][j])) != 2))){
+                                next[i][j] = 0;
+                            }
+                            else {
+                            	next[i][j] = 1;
+                            }
+                        }  
+                    }
+                    //si on est dans le coin supérieur droit
+                    if(j == 0 && i == m.length-1) {
+                        if(m[i][j] == 0){
+                            if(((m[i-1][j]) + (m[i][j+1]) + (m[i-1][j+1]) + (m[i][j])) == 3) {
+                            	next[i][j] = 1;
+                            }
+                        }
+                        else{
+                            if((((m[i-1][j]) + (m[i][j+1]) + (m[i-1][j+1])) != 3) && ((((m[i-1][j]) + (m[i][j+1]) + (m[i-1][j+1])) != 2))) {
+                            	next[i][j] = 0; 
+                            }
+                            else {
+                            	next[i][j] = 1;
+                            }
+                        }  
+                    }      
+                    //si on est dans la ligne de droite
+                    if(i == m.length-1 && j > 0 && j < m.length-1){
+                        if(m[i][j] == 0){
+                            if(((m[i-1][j]) + (m[i][j+1]) + (m[i-1][j+1]) + (m[i-1][j-1]) + (m[i][j-1])) == 3){
+                            	next[i][j] = 1;
+                            }
+                        }
+                        else{
+                            if((((m[i-1][j]) + (m[i][j+1]) + (m[i-1][j+1]) + (m[i-1][j-1]) + (m[i][j-1])) != 3) && ((((m[i-1][j]) + (m[i][j+1]) + (m[i-1][j+1]) + (m[i-1][j-1]) + (m[i][j-1])) != 2))){
+                            	next[i][j] = 0;
+                            }
+                            else {
+                            	next[i][j] = 1;
+                            }
+                        }  
+                    }              
+                    //si on est dans le coint inférieur droit
+                    if(i == m.length-1 && j == m.length-1){
+                        if(m[i][j] == 0){
+                            if(((m[i-1][j]) + (m[i][j-1]) + (m[i-1][j-1])) == 3){
+                            	next[i][j] = 1;
+                            }
+                        }
+                        else{
+                            if((((m[i-1][j]) + (m[i][j-1]) + (m[i-1][j-1])) != 3) && ((((m[i-1][j]) + (m[i][j-1]) + (m[i-1][j-1])) != 2))){
+                            	next[i][j] = 0;
+                            }
+                            else {
+                            	next[i][j] = 1;
+                            }
+                        }                      
+                    }
+                    //si on est dans la ligne du bat
+                    if(j == m.length-1 && i > 0 && i < m.length-1){
+                        if(m[i][j] == 0){
+                            if(((m[i-1][j]) + (m[i][j-1]) + (m[i-1][j-1]) + (m[i+1][j-1]) + (m[i+1][j])) == 3){
+                            	next[i][j] = 1;
+                            }
+                        }
+                        else{
+                            if((((m[i-1][j]) + (m[i][j-1]) + (m[i-1][j-1]) + (m[i+1][j-1]) + (m[i+1][j])) != 3) && ((((m[i-1][j]) + (m[i][j-1]) + (m[i-1][j-1]) + (m[i+1][j-1]) + (m[i+1][j])) != 2))){
+                            	next[i][j] = 0;
+                            }
+                            else {
+                            	next[i][j] = 1;
+                            }
+                        }                  
+                    }              
+                    //si on est dans le coint inférieur gauche
+                    if(i == 0 && j == m.length-1){
+                        if(m[i][j] == 0){
+                            if(((m[i][j-1]) + (m[i+1][j-1]) + (m[i+1][j])) == 3){
+                            	next[i][j] = 1;
+                            }
+                        }
+                        else{
+                            if((((m[i][j-1]) + (m[i+1][j-1]) + (m[i+1][j])) != 3) && ((((m[i][j-1]) + (m[i+1][j-1]) + (m[i+1][j])) != 2))){
+                            	next[i][j] = 0;
+                            }
+                            else {
+                            	next[i][j] = 1;
+                            }
+                        }                      
+                    }
+                    //enfin, si on est dans la ligne de gauche
+                    if(i == 0 && j > 0 && j < m.length-1){
+                        if(m[i][j] == 0){
+                            if(((m[i][j-1]) + (m[i+1][j-1]) + (m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1])) == 3){
+                            	next[i][j] = 1;
+                            }
+                        }
+                        else{
+                            if((((m[i][j-1]) + (m[i+1][j-1]) + (m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1])) != 3) && ((((m[i][j-1]) + (m[i+1][j-1]) + (m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1])) != 2))){
+                            	next[i][j] = 0;
+                            }
+                            else {
+                            	next[i][j] = 1;
+                            }
+                        }                  
+                    }                  
+                }
+                else {  //régles du jeu en pratique hort borts de la grille
+                    if(m[i][j] == 0) {        
+                        if(((m[i-1][j-1]) + (m[i-1][j]) + (m[i-1][j+1]) + (m[i][j-1]) + (m[i][j]) + (m[i][j+1]) + (m[i+1][j-1]) + (m[i+1][j]) + (m[i+1][j+1])) == 3){
+                        	next[i][j] = 1;
+                        }
+                    }
+                    else{              
+                        if((((m[i-1][j-1]) + (m[i-1][j]) + (m[i-1][j+1]) + (m[i][j-1]) + (m[i][j+1]) + (m[i+1][j-1]) + (m[i+1][j]) + (m[i+1][j+1])) != 3)  && (((m[i-1][j-1]) + (m[i-1][j]) + (m[i-1][j+1]) + (m[i][j-1]) + (m[i][j+1]) + (m[i+1][j-1]) + (m[i+1][j]) + (m[i+1][j+1])) != 2)) {
+                        	next[i][j] = 0;
+                        }
+                        else {
+                        	next[i][j] = 1;
+                        }
+                    }
+                }
+            }
+        }
+		return next;
+	}
+	
 	/*
 	 * Récupération des producteurs disponibles et initialisation du producteur
 	 * courant avec le producteur par défaut
@@ -81,86 +226,39 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
 		}
 	}
 
-	private int compterVoisins(int x, int y, int[][] m) {
-
-		int nbVoisins = 0;
-		// milieu gauche
-		if (x - 1 >= 0) {
-			if (m[x - 1][y] != 0) {
-				nbVoisins++;
-			}
-			// bas gauche
-			if (y + 1 < m[0].length) {
-				if (m[x - 1][y + 1] != 0) {
-					nbVoisins++;
-				}
-			}
-		}
-
-		// milieu droit
-		if (x + 1 < m.length) {
-			if (m[x + 1][y] != 0) {
-				nbVoisins++;
-			}
-			// haut droit
-			if (y - 1 > 0) {
-				if (m[x + 1][y - 1] != 0) {
-					nbVoisins++;
-				}
-			}
-		}
-
-		// milieu haut
-		if (y - 1 > 0) {
-			if (m[x][y - 1] != 0) {
-				nbVoisins++;
-			}
-			// haut gauche
-			if (x - 1 > 0) {
-				if (m[x - 1][y - 1] != 0) {
-					nbVoisins++;
-				}
-			}
-		}
-
-		// milieu bas
-		if (y + 1 < m[0].length) {
-			if (m[x][y + 1] != 0) {
-				nbVoisins++;
-			}
-			// bas droite
-			if (x + 1 < m.length) {
-				if (m[x + 1][y + 1] != 0) {
-					nbVoisins++;
-				}
-			}
-		}
-
-		return nbVoisins;
-	}
-
 	private void afficher() throws Exception {
-		int width = 10;
-		int height = 10;
+		container.removeAll();
+		int width = 30;
+		int height = 30;
 		int[][] m = modele.getMatrice();
-		for (int i = 0; i < m.length; i++) {
-			for (int j = 0; j < m[0].length; j++) {
+		for(int i = 0 ; i< m.length ; i ++) {
+			for(int j = 0 ; j < m[0].length ; j++){
 				JLabel cell = new JLabel();
 				cell.setOpaque(true);
-				cell.setBounds(i * width, j * height, width, height);
+				cell.setBounds(i*width, j*height, width, height);
 				cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-				if (m[i][j] == 0) {
+				if(m[i][j] == 0){
 					cell.setBackground(Color.WHITE);
 				}
-				if (m[i][j] == 1) {
+				if(m[i][j] == 1){
 					cell.setBackground(Color.BLACK);
 				}
 				container.add(cell);
 			}
 		}
+		container.repaint();
 		frame.add(container);
 		frame.pack();
 		frame.setVisible(true);
+	}
+	
+	public static int[][] cloneArray(int[][] src) {
+	    int length = src.length;
+	    int[][] target = new int[length][src[0].length];
+	    for (int i = 0; i < length; i++) {
+	        System.arraycopy(src[i], 0, target[i], 0, src[i].length);
+	    }
+	    return target;
 	}
 
 	@Override
