@@ -61,7 +61,7 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
 		for (int k = 0; k < 100; k++) {
 			afficher(m);
 			Thread.sleep(500);
-			m = evoluer2(m);
+			m = evoluer(m);
 		}
 	}
 
