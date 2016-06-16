@@ -6,10 +6,13 @@ import java.util.List;
 import plateforme.EtatPlugin;
 import plateforme.Plateforme;
 import plateforme.Plugin;
+import plateforme.communication.Action;
+import plateforme.communication.ActionType;
+import plateforme.communication.Observer;
 import plateforme.interfaces.Moniteur;
 import descripteur.Descripteur;
 
-public class MoniteurImpl extends Plugin implements Moniteur {
+public class MoniteurImpl extends Plugin implements Moniteur, Observer {
 
 	private List<Descripteur> pluginsNonCharges = new ArrayList<Descripteur>();
 	private List<Descripteur> pluginsCharges = new ArrayList<Descripteur>();
@@ -18,10 +21,10 @@ public class MoniteurImpl extends Plugin implements Moniteur {
 
 	public MoniteurImpl(Plateforme p, Descripteur d) {
 		super(p,d);
+		p.register(this);
 	}
 
-	@Override
-	public void afficher(EtatPlugin e) {
+	public void afficherConsole(EtatPlugin e) {
 
 		if (EtatPlugin.NON_CHARGE.equals(e)) {
 			System.out.println("----------------------------------------------------- " + EtatPlugin.NON_CHARGE
@@ -73,24 +76,28 @@ public class MoniteurImpl extends Plugin implements Moniteur {
 
 	}
 
+
 	@Override
-	public void notifier(Descripteur d, EtatPlugin e) {
-
-		if (EtatPlugin.NON_CHARGE.equals(e)) {
-			pluginsNonCharges.add(d);
-			pluginsCharges.remove(d);
-		}
-		if (EtatPlugin.CHARGE.equals(e)) {
+	public void notify(Action a) {
+		ActionType t = a.getActionType();
+		
+		if(ActionType.CHARGEMENT_PLUGIN.equals(t)){
+			Descripteur d = (Descripteur) a.getData();
 			pluginsCharges.add(d);
-			pluginsNonCharges.remove(d);
-		} else if (EtatPlugin.DEMARRE.equals(e)) {
-			pluginsEnCours.add(d);
-			pluginsArretes.remove(d);
-		} else if (EtatPlugin.ARRETE.equals(e)) {
-			pluginsArretes.add(d);
-			pluginsEnCours.remove(d);
 		}
-
+		else if(ActionType.EXECUTION_PLUGIN.equals(t)){
+			Descripteur d = (Descripteur) a.getData();
+			pluginsEnCours.add(d);
+		}
+		else if(ActionType.ARRET_PLUGIN.equals(t)){
+			Descripteur d = (Descripteur) a.getData();
+			pluginsEnCours.remove(d);
+			pluginsArretes.add(d);
+		}
+		else if(ActionType.AFFICHER_MONITEUR.equals(t)){
+			afficherConsole(EtatPlugin.CHARGE);
+			afficherConsole(EtatPlugin.DEMARRE);
+			afficherConsole(EtatPlugin.ARRETE);
+		}
 	}
-
 }

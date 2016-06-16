@@ -7,17 +7,25 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
+import plateforme.communication.Action;
+import plateforme.communication.AfficherMoniteur;
+import plateforme.communication.ChargementPlugin;
+import plateforme.communication.ExecutionPlugin;
+import plateforme.communication.Observer;
+import plateforme.communication.Subject;
 import plateforme.interfaces.Application;
 import plateforme.interfaces.Moniteur;
 import plateforme.interfaces.Producteur;
 import descripteur.Descripteur;
 
-public final class Plateforme {
+public final class Plateforme implements Subject {
 
 	private static List<String> interfacesAutorisees = Arrays.asList(Application.class.getName(),
 			Moniteur.class.getName(), Producteur.class.getName());
@@ -25,9 +33,9 @@ public final class Plateforme {
 	private static Map<String, List<Descripteur>> plugins = new HashMap<String, List<Descripteur>>();
 	private static List<Descripteur> nonCharges = new ArrayList<Descripteur>();
 
-	private static List<Moniteur> moniteurs = new ArrayList<Moniteur>();
-
 	private static Plateforme instance = null;
+	
+	private static Set<Observer> obs = new HashSet<>();
 
 	private Plateforme() {
 		super();
@@ -84,9 +92,13 @@ public final class Plateforme {
 			String interfaceNom = (String) p.get("interface");
 			String desc = (String) p.get("desc");
 			String classeNom = (String) p.get("class");
-			Descripteur d = new Descripteur(desc, interfaceNom, classeNom);
+			Boolean autorun = Boolean.valueOf(p.getProperty("autorun"));
+			Descripteur d = new Descripteur(desc, interfaceNom, classeNom, autorun);
 			if (interfacesAutorisees.contains(interfaceNom)) {
 				plugins.get(interfaceNom).add(d);
+				if(autorun){
+					getPlugin(d);
+				}
 			} else {
 				nonCharges.add(d);
 			}
@@ -98,51 +110,45 @@ public final class Plateforme {
 		Plateforme.getInstance();
 		loadConfig(fichier);
 
-		List<Descripteur> moniteursDesc = plugins.get(Moniteur.class.getName());
-
-		// TODO traiter le moniteur comme un plugin Ã  part entiÃ¨re
-		for (Descripteur mDesc : moniteursDesc) {
-			Plugin p = getPlugin(mDesc);
-			Moniteur m = (Moniteur) p;
-			m.notifier(mDesc, EtatPlugin.DEMARRE);
-			moniteurs.add(m);
-		}
-
-		// TODO initialiser l'application comme un plugin
-		List<Descripteur> apps = plugins.get(Application.class.getName());
-		for (Descripteur app : apps) {
-			Plugin p = getPlugin(app);
-			notifierMoniteurs(app, EtatPlugin.DEMARRE);
-			((Application) p).executer();
-		}
-
-		for (Entry<String, List<Descripteur>> entry : plugins.entrySet()) {
-			for (Descripteur d : entry.getValue()) {
-				notifierMoniteurs(d, EtatPlugin.CHARGE);
+	//TODO séparer les notions de chargements et d'execution via un attribut autorun dans le descripteur
+	//TODO tester si il est possible de prendre en compte les plugins non chargés (cas du fichier mal formé ou de l'interface introuvable)
+	for (Entry<String, List<Descripteur>> entry : plugins.entrySet()) {
+		for (Descripteur d : entry.getValue()) {
+			instance.notifyObservers(new ChargementPlugin(d));
+			if(d.getAutorun()){
+				instance.notifyObservers(new ExecutionPlugin(d));
 			}
 		}
-
-		afficherPlugins(EtatPlugin.DEMARRE);
-		afficherPlugins(EtatPlugin.CHARGE);
-		afficherPlugins(EtatPlugin.NON_CHARGE);
-
-		// TODO coder puis initialiser l'afficheur
-
 	}
+	instance.notifyObservers(new AfficherMoniteur());
+		// TODO initialiser l'application comme un plugin
+//		List<Descripteur> apps = plugins.get(Application.class.getName());
+//		for (Descripteur app : apps) {
+//			Plugin p = getPlugin(app);
+//			notifierMoniteurs(app, EtatPlugin.DEMARRE);
+//			((Application) p).executer();
+//		}
 
-	private static void afficherPlugins(EtatPlugin e) {
-		for (Moniteur m : moniteurs) {
-			m.afficher(e);
-		}
-	}
-
-	private static void notifierMoniteurs(Descripteur d, EtatPlugin e) {
-		for (Moniteur m : moniteurs) {
-			m.notifier(d, e);
-		}
 	}
 
 	public static void main(String[] args) throws Exception {
 		Plateforme.demarrer("config.txt");
+	}
+
+	@Override
+	public void register(Observer o) {
+		obs.add(o);
+	}
+
+	@Override
+	public void unregister(Observer o) {
+		obs.remove(o);
+	}
+
+	@Override
+	public void notifyObservers(Action a) {
+		for (Observer o : obs) {
+			o.notify(a);
+		}
 	}
 }

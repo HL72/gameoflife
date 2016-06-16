@@ -1,12 +1,15 @@
 interface = plateforme.interfaces.Moniteur
 class = plugins.moniteurs.MoniteurImpl
 desc = moniteur console
+autorun = true
 *
 interface = plateforme.interfaces.Application
 class = plugins.jeudelavie.JeuDeLaVie
 desc = application jeu de la vie
+autorun = true
 *
 interface = plateforme.interfaces.Producteur
 class = plugins.producteurs.ProducteurImpl
-desc = producteur de donnÃ©es pour le modÃ¨le
+desc = producteur de données pour le modèle
+autorun = false
 *
