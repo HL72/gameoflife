@@ -21,6 +21,8 @@ import plateforme.interfaces.Producteur;
 
 public class JeuDeLaVie extends Plugin implements Application, Observer {
 
+	private static final int CELL_WIDTH = 30;
+	private static final int CELL_HEIGHT = 30;
 	MatriceModele modele;
 	List<Descripteur> producteurs = new ArrayList<Descripteur>();
 	Producteur producteurCourant;
@@ -38,7 +40,6 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
 				container = new JPanel();
 				container.setBackground(Color.white);
 				container.setLayout(null);
-				container.setPreferredSize(new Dimension(300, 300));
 				// Initialisation du producteur par défaut
 				producteurCourant = new ProducteurImplDefaut(p, d);
 				modele = producteurCourant.getMatrice();
@@ -55,13 +56,13 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
 
 	@Override
 	public void executer() throws Exception {
-		int[][] current = modele.getMatrice();
+		int[][] m = modele.getMatrice();
+		container.setPreferredSize(new Dimension(m.length * CELL_WIDTH , m[0].length * CELL_HEIGHT));
 		for (int k = 0; k < 100; k++) {
-			afficher();
+			afficher(m);
 			Thread.sleep(500);
-			current = evoluer(current);
-			modele.setMatrice(current);
-			}
+			m = evoluer2(m);
+		}
 	}
 
 	private int[][] evoluer(int[][] m) {
@@ -219,7 +220,41 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
         }
 		return next;
 	}
-	
+
+	private int[][] evoluer2(int[][] m){
+		int[][] next = new int[m.length][m.length];
+		for (int x = 0; x < m.length; x++) {
+			for (int y = 0; y < m.length; y++) {
+				int nbVoisins = compterVoisins(x,y,m);
+				if(nbVoisins == 3){
+					next[x][y] = 1;
+				}
+				else if(nbVoisins == 2){
+					next[x][y] = m[x][y];
+				}
+				else{
+					next[x][y] = 0;
+				}
+			}
+		}
+		return next;
+	}
+	private int compterVoisins(int x, int y, int[][] m) {
+		int nbVoisins = 0;
+		for (int dx = -1; dx < 2; dx++) {
+			for (int dy = -1; dy < 2; dy++) {
+				int posX = x + dx;
+				int posY = y + dy;
+				if(posX >= 0 && posX < m.length && posY >= 0 && posY < m.length){
+					if(dx != 0 || dy != 0){
+						nbVoisins += m[posX][posY];
+					}
+				}
+			}
+		}
+		return nbVoisins;
+	}
+
 	/*
 	 * Récupération des producteurs disponibles et initialisation du producteur
 	 * courant avec le producteur par défaut
@@ -235,16 +270,13 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
 		}
 	}
 
-	private void afficher() throws Exception {
+	private void afficher(int[][] m) throws Exception {
 		container.removeAll();
-		int width = 30;
-		int height = 30;
-		int[][] m = modele.getMatrice();
 		for(int i = 0 ; i< m.length ; i ++) {
 			for(int j = 0 ; j < m[0].length ; j++){
 				JLabel cell = new JLabel();
 				cell.setOpaque(true);
-				cell.setBounds(i*width, j*height, width, height);
+				cell.setBounds(i*CELL_WIDTH, j*CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT);
 				cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				if(m[i][j] == 0){
 					cell.setBackground(Color.WHITE);
