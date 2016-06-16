@@ -12,14 +12,14 @@ import plateforme.communication.Observer;
 import plateforme.interfaces.Moniteur;
 import descripteur.Descripteur;
 
-public class MoniteurImpl extends Plugin implements Moniteur, Observer {
+public class MoniteurConsole extends Plugin implements Moniteur, Observer {
 
 	private List<Descripteur> pluginsNonCharges = new ArrayList<Descripteur>();
 	private List<Descripteur> pluginsCharges = new ArrayList<Descripteur>();
 	private List<Descripteur> pluginsEnCours = new ArrayList<Descripteur>();
 	private List<Descripteur> pluginsArretes = new ArrayList<Descripteur>();
 
-	public MoniteurImpl(Plateforme p, Descripteur d) {
+	public MoniteurConsole(Plateforme p, Descripteur d) {
 		super(p,d);
 		p.register(this);
 	}

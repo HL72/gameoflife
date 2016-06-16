@@ -1,11 +1,6 @@
 interface = plateforme.interfaces.Moniteur
-class = plugins.moniteurs.MoniteurImpl
+class = plugins.moniteurs.MoniteurGraphique
 desc = moniteur console
-autorun = true
-*
-interface = plateforme.interfaces.Application
-class = plugins.jeudelavie.JeuDeLaVie
-desc = application jeu de la vie
 autorun = true
 *
 interface = plateforme.interfaces.Producteur
