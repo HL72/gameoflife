@@ -2,18 +2,16 @@ package plugins.jeudelavie;
 
 import descripteur.Descripteur;
 import plateforme.Plateforme;
-import plateforme.Plugin;
 import plateforme.interfaces.Producteur;
 
 /*
  * Producteur par défaut du jeu de la vie
  */
-public class ProducteurImplDefaut extends Plugin implements Producteur {
+public class ProducteurImplDefaut implements Producteur {
 
 	private MatriceModele matrice;
 	
 	public ProducteurImplDefaut(Plateforme plateforme, Descripteur descripteur) {
-		super(plateforme, descripteur);
 		initMatrice();
 	}
 	

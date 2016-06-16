@@ -3,11 +3,6 @@ class = plugins.moniteurs.MoniteurImpl
 desc = moniteur console
 autorun = true
 *
-interface = plateforme.interfaces.Application
-class = plugins.jeudelavie.JeuDeLaVie
-desc = application jeu de la vie
-autorun = true
-*
 interface = plateforme.interfaces.Producteur
 class = plugins.jeudelavie.ProducteurImplDefaut
 desc = producteur par defaut jeu de la vie
@@ -22,4 +17,9 @@ interface = plateforme.interfaces.Producteur
 class = plugins.producteurs.ProducteurImplNavire
 desc = producteur le navire jeu de la vie
 autorun = false
+*
+interface = plateforme.interfaces.Application
+class = plugins.jeudelavie.JeuDeLaVie
+desc = application jeu de la vie
+autorun = true
 *

@@ -13,10 +13,13 @@ import javax.swing.JPanel;
 import descripteur.Descripteur;
 import plateforme.Plateforme;
 import plateforme.Plugin;
+import plateforme.communication.Action;
+import plateforme.communication.ActionType;
+import plateforme.communication.Observer;
 import plateforme.interfaces.Application;
 import plateforme.interfaces.Producteur;
 
-public class JeuDeLaVie extends Plugin implements Application {
+public class JeuDeLaVie extends Plugin implements Application, Observer {
 
 	MatriceModele modele;
 	List<Descripteur> producteurs;
@@ -26,20 +29,23 @@ public class JeuDeLaVie extends Plugin implements Application {
 
 	public JeuDeLaVie(Plateforme p, Descripteur d) throws Exception {
 		super(p, d);
+		// Création de l'IHM
 		frame = new JFrame("Jeu de la Vie");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		container = new JPanel();
 		container.setBackground(Color.white);
 		container.setLayout(null);
 		container.setPreferredSize(new Dimension(400, 400));
+		// Enregistrement de l'Observer sur la plateforme
+		p.register(this);
+		// Initialisation du producteur par défaut
+		producteurCourant = new ProducteurImplDefaut(p, d);
+		modele = producteurCourant.getMatrice();
+		executer();
 	}
 
 	@Override
 	public void executer() throws Exception {
-
-		initProducteurs();
-
-		modele = producteurCourant.getMatrice();
 
 		// Une cellule morte poss�dant exactement trois voisines vivantes
 		// devient vivante (elle na�t).
@@ -56,6 +62,8 @@ public class JeuDeLaVie extends Plugin implements Application {
 				}
 			}
 		}
+
+		afficher();
 	}
 
 	/*
@@ -153,6 +161,16 @@ public class JeuDeLaVie extends Plugin implements Application {
 		frame.add(container);
 		frame.pack();
 		frame.setVisible(true);
+	}
+
+	@Override
+	public void notify(Action a) {
+		ActionType t = a.getActionType();
+
+		if (ActionType.CHARGEMENT_PLUGIN.equals(t)) {
+			Descripteur d = (Descripteur) a.getData();
+			producteurs.add(d);
+		}
 	}
 
 }
