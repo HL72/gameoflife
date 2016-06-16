@@ -21,11 +21,18 @@ public class ProducteurImplTube extends Plugin implements Producteur {
 	
 	private void initMatrice() {
 		int[][] m = new int[10][10];
-		m[0][1] = 1;
-		m[5][5] = 1;
+		m[0][9] = 1;
+		m[0][8] = 1;
+		m[1][8] = 1;
+		m[2][8] = 1;
+		m[3][7] = 1;
 		m[3][6] = 1;
-		m[7][8] = 1;
-		m[4][1] = 1;
+		m[2][6] = 1;
+		m[8][0] = 1;
+		m[7][1] = 1;
+		m[7][2] = 1;
+		m[8][2] = 1;
+		m[9][2] = 1;
 
 		matrice = new MatriceModele(m);
 	}
