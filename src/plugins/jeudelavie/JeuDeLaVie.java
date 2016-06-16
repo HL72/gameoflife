@@ -81,7 +81,7 @@ public class JeuDeLaVie extends Plugin implements Application, Observer {
                     //si on est dans la ligne du haut
                     if(j == 0 && i > 0 && i < m.length-1 ) {
                         if(m[i][j] == 0) {
-                            if(((m[i-1][j]) + (m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1]) + (m[i-1][j])) == 3) {
+                            if(((m[i-1][j]) + (m[i+1][j]) + (m[i+1][j+1]) + (m[i][j+1]) + (m[i-1][j+1])) == 3) {
                             	next[i][j] = 1;
                             }
                         }
